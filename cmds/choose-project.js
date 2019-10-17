@@ -18,7 +18,10 @@ module.exports = (args, access_token) => {
         for (let i = 0; i < projectsData.length; i++) {
           const project = projectsData[i];
 
-          projects.push(project.name);
+          projects.push({
+            name: project.name,
+            value: project
+          });
         }
 
         chooseProject();
@@ -39,15 +42,7 @@ module.exports = (args, access_token) => {
         }
       ])
       .then(answers => {
-        for (let i = 0; i < projectsData.length; i++) {
-          if (answers.project === projectsData[i].name) {
-            require("./choose-environment")(
-              args,
-              access_token,
-              projectsData[i]
-            );
-          }
-        }
+        require("./choose-environment")(args, access_token, answers.project);
       });
   }
 

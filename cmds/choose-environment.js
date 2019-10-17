@@ -18,7 +18,10 @@ module.exports = (args, access_token, selectedProject) => {
         for (let i = 0; i < environmentsData.length; i++) {
           const environment = environmentsData[i];
 
-          environments.push(environment.name);
+          environments.push({
+            name: environment.name,
+            value: environment
+          });
         }
 
         chooseEnvironment();
@@ -39,11 +42,12 @@ module.exports = (args, access_token, selectedProject) => {
         }
       ])
       .then(answers => {
-        for (let i = 0; i < environmentsData.length; i++) {
-          if (answers.environment === environmentsData[i].name) {
-            require("./choose-backup")(args, access_token, environmentsData[i]);
-          }
-        }
+        require("./choose-backup")(
+          args,
+          access_token,
+          selectedProject,
+          answers.environment
+        );
       });
   }
 

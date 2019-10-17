@@ -1,4 +1,5 @@
 const minimist = require("minimist");
+const aws = require("./helpers/aws");
 
 module.exports = () => {
   const args = minimist(process.argv.slice(2));
@@ -12,21 +13,30 @@ module.exports = () => {
     cmd = "help";
   }
 
-  switch (cmd) {
-    case "sync":
-      require("./cmds/check-config")(args);
-      break;
+  aws
+    .checkAwsPresence()
+    .then(() => {
+      switch (cmd) {
+        case "sync":
+          require("./cmds/check-config")(args);
+          break;
 
-    case "version":
-      require("./cmds/version")(args);
-      break;
+        case "version":
+          require("./cmds/version")(args);
+          break;
 
-    case "help":
-      require("./cmds/help")(args);
-      break;
+        case "help":
+          require("./cmds/help")(args);
+          break;
 
-    default:
-      console.error(`"${cmd}" is not a valid command!`);
-      break;
-  }
+        default:
+          console.error(`"${cmd}" is not a valid command!`);
+          break;
+      }
+    })
+    .catch(err => {
+      console.error(
+        `Please install aws CLI for your platform: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html`
+      );
+    });
 };

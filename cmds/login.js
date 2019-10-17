@@ -7,6 +7,17 @@ module.exports = args => {
   let access_token = null;
   let email = null;
 
+  config
+    .getProperties(["access_token", "email"])
+    .then(loginInfo => {
+      console.log("Logged in!");
+      require("./choose-project")(args, loginInfo.access_token);
+    })
+    .catch(err => {
+      console.log(err);
+      showLoginForm();
+    });
+
   function attemptLogin(payload) {
     return new Promise((resolve, reject) => {
       axios
@@ -24,7 +35,7 @@ module.exports = args => {
     });
   }
 
-  function login() {
+  function showLoginForm() {
     inquirer
       .prompt([
         { type: "input", name: "email", message: "Login Email:" },
@@ -50,6 +61,4 @@ module.exports = args => {
           });
       });
   }
-
-  login();
 };
