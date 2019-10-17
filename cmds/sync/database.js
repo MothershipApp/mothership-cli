@@ -1,7 +1,8 @@
 const inquirer = require("inquirer");
-const { exec } = require("child_process");
+const aws = require("../../helpers/aws");
 const config = require("../../helpers/config");
 const chalk = require("chalk");
+const ora = require("ora");
 
 module.exports = {
   configure: function(environment, backup) {
@@ -11,7 +12,7 @@ module.exports = {
       config
         .getEnvironmentProperties(
           environment.name,
-          `Database: ${backup.target.name}`
+          `Database: ${backup.target.id}`
         )
         .then(() => {
           resolve();
@@ -52,7 +53,7 @@ module.exports = {
             ])
             .then(answers => {
               const finalObj = {};
-              finalObj[`Database: ${backup.target.name}`] = {
+              finalObj[`Database: ${backup.target.id}`] = {
                 db_type: answers.type,
                 db_name: answers.database,
                 db_user: answers.username,
@@ -61,6 +62,32 @@ module.exports = {
               config.setEnvironmentProperty(environment.name, finalObj);
               resolve();
             });
+        });
+    });
+  },
+
+  sync: function(environment, backup) {
+    return new Promise((resolve, reject) => {
+      const spinner = ora().start();
+      config
+        .getEnvironmentProperties(
+          environment.name,
+          `Database: ${backup.target.id}`
+        )
+        .then(configuration => {
+          aws
+            .cpS3(backup.target.bucket, backup.value, "./mothership-downloads")
+            .then(() => {
+              spinner.stop();
+              console.log(
+                `Database s3://${backup.target.bucket}${backup.value} sync complete`
+              );
+              resolve();
+            });
+        })
+        .catch(err => {
+          spinner.stop();
+          reject(err);
         });
     });
   }

@@ -1,8 +1,9 @@
 const inquirer = require("inquirer");
 const inquirerFileTreeSelection = require("inquirer-file-tree-selection-prompt");
-const { exec } = require("child_process");
 const config = require("../../helpers/config");
+const aws = require("../../helpers/aws");
 const chalk = require("chalk");
+const ora = require("ora");
 
 inquirer.registerPrompt("file-tree-selection", inquirerFileTreeSelection);
 
@@ -14,7 +15,7 @@ module.exports = {
       config
         .getEnvironmentProperties(
           environment.name,
-          `Directory: ${backup.target.name}`
+          `Directory: ${backup.target.id}`
         )
         .then(() => {
           resolve();
@@ -37,11 +38,38 @@ module.exports = {
             .then(answers => {
               config.setEnvironmentProperty(
                 environment.name,
-                `Directory: ${backup.target.name}`,
+                `Directory: ${backup.target.id}`,
                 `${path}/${answers.path}`
               );
               resolve();
             });
+        });
+    });
+  },
+
+  sync: function(environment, backup) {
+    return new Promise((resolve, reject) => {
+      const spinner = ora().start();
+      config
+        .getEnvironmentProperties(
+          environment.name,
+          `Directory: ${backup.target.id}`
+        )
+        .then(configuration => {
+          console.log(backup.target.bucket, backup.value, configuration);
+          aws
+            .syncS3(backup.target.bucket, backup.value, configuration)
+            .then(() => {
+              spinner.stop();
+              console.log(
+                `Directory s3://${backup.target.bucket}${backup.value} sync complete`
+              );
+              resolve();
+            });
+        })
+        .catch(err => {
+          spinner.stop();
+          reject(err);
         });
     });
   }

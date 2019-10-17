@@ -21,6 +21,10 @@ module.exports = () => {
           require("./cmds/check-config")(args);
           break;
 
+        case "reset":
+          require("./cmds/check-config")(args);
+          break;
+
         case "version":
           require("./cmds/version")(args);
           break;

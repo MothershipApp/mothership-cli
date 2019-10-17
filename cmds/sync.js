@@ -3,6 +3,7 @@ const ora = require("ora");
 const axios = require("axios");
 const dayjs = require("dayjs");
 const chalk = require("chalk");
+const aws = require("../helpers/aws");
 
 const repositorySync = require("./sync/repository");
 const databaseSync = require("./sync/database");
@@ -72,6 +73,16 @@ module.exports = (
   async function buildConfig() {
     for (let i = 0; i < selectedBackup.backups.length; i++) {
       const backup = selectedBackup.backups[i];
+
+      if (
+        backup.target.type === "Directory" ||
+        backup.target.type === "Database"
+      ) {
+        await aws.configureProfile(backup).then(() => {
+          return true;
+        });
+      }
+
       if (backup.target.type === "Directory") {
         await directorySync.configure(selectedEnvironment, backup).then(() => {
           return true;
@@ -111,23 +122,43 @@ module.exports = (
       });
   }
 
-  function sync() {
-    for (let i = 0; i < selectedBackup.length; i++) {
-      const backup = selectedBackup[i];
+  async function sync() {
+    for (let i = 0; i < selectedBackup.backups.length; i++) {
+      const backup = selectedBackup.backups[i];
+      if (backup.target.type === "Directory") {
+        await directorySync
+          .sync(selectedEnvironment, backup)
+          .then(() => {
+            return true;
+          })
+          .catch(err => {
+            console.log("Error syncing directory " + err);
+          });
+      }
 
-      switch (backup.target.type) {
-        case "Repository":
-          break;
-        case "Database":
-          break;
-        case "Directory":
-          break;
+      // if (backup.target.type === "Repository") {
+      //   await repositorySync.sync(selectedEnvironment, backup).then(() => {
+      //     return true;
+      //   });
+      // }
 
-        default:
-          break;
+      if (backup.target.type === "Database") {
+        await databaseSync
+          .sync(selectedEnvironment, backup)
+          .then(() => {
+            return true;
+          })
+          .catch(err => {
+            console.log("Error syncing database " + err);
+          });
       }
     }
   }
 
-  buildConfig();
+  buildConfig().then(() => {
+    sync().then(() => {
+      console.log(`${chalk.green("Sync complete")}`);
+      process.exit();
+    });
+  });
 };

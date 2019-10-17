@@ -11,7 +11,7 @@ module.exports = {
       config
         .getEnvironmentProperties(
           environment.name,
-          `Repository: ${backup.target.name}`
+          `Repository: ${backup.target.id}`
         )
         .then(() => {
           resolve();
@@ -35,7 +35,7 @@ module.exports = {
             .then(answers => {
               config.setEnvironmentProperty(
                 environment.name,
-                `Repository: ${backup.target.name}`,
+                `Repository: ${backup.target.id}`,
                 `${path}/${answers.path}`
               );
               resolve();

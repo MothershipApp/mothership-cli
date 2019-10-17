@@ -39,7 +39,7 @@ module.exports = (args, access_token, selectedProject) => {
         }
       })
       .catch(error => {
-        console.error("There was an error loading environments");
+        console.error("There was an error loading environments", error);
       });
   }
 

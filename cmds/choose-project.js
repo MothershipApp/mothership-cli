@@ -10,7 +10,11 @@ module.exports = (args, access_token) => {
   config
     .getProperties("project")
     .then(project => {
-      require("./choose-environment")(args, access_token, project);
+      if (project.id) {
+        require("./choose-environment")(args, access_token, project);
+      } else {
+        retrieveProjects();
+      }
     })
     .catch(err => {
       retrieveProjects();

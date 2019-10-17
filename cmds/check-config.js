@@ -3,22 +3,28 @@ const inquirer = require("inquirer");
 const defaultConfigContent = {
   access_token: null,
   email: null,
-  environments: {}
+  environments: {},
+  profiles: {},
+  project: {}
 };
 
 module.exports = args => {
-  config
-    .readConfig()
-    .then(data => {
-      if (data) {
-        require("./login")(args);
-      } else {
+  if (args._[0] === "reset") {
+    requestInitMothershipProject();
+  } else {
+    config
+      .readConfig()
+      .then(data => {
+        if (data) {
+          require("./login")(args);
+        } else {
+          requestInitMothershipProject();
+        }
+      })
+      .catch(() => {
         requestInitMothershipProject();
-      }
-    })
-    .catch(() => {
-      requestInitMothershipProject();
-    });
+      });
+  }
 
   function requestInitMothershipProject() {
     inquirer
