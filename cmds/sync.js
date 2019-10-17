@@ -83,19 +83,20 @@ module.exports = (
         });
       }
 
-      if (backup.target.type === "Directory") {
+      if (backup.target.type === "Directory" && args.directories) {
+        console.log("\n\nSyncing directory...");
         await directorySync.configure(selectedEnvironment, backup).then(() => {
           return true;
         });
       }
 
-      if (backup.target.type === "Repository") {
+      if (backup.target.type === "Repository" && args.repositories) {
         await repositorySync.configure(selectedEnvironment, backup).then(() => {
           return true;
         });
       }
 
-      if (backup.target.type === "Database") {
+      if (backup.target.type === "Database" && args.databases) {
         await databaseSync.configure(selectedEnvironment, backup).then(() => {
           return true;
         });
@@ -125,7 +126,7 @@ module.exports = (
   async function sync() {
     for (let i = 0; i < selectedBackup.backups.length; i++) {
       const backup = selectedBackup.backups[i];
-      if (backup.target.type === "Directory") {
+      if (backup.target.type === "Directory" && args.directories) {
         await directorySync
           .sync(selectedEnvironment, backup)
           .then(() => {
@@ -136,22 +137,22 @@ module.exports = (
           });
       }
 
-      // if (backup.target.type === "Repository") {
-      //   await repositorySync.sync(selectedEnvironment, backup).then(() => {
-      //     return true;
-      //   });
-      // }
-
-      if (backup.target.type === "Database") {
-        await databaseSync
-          .sync(selectedEnvironment, backup)
-          .then(() => {
-            return true;
-          })
-          .catch(err => {
-            console.log("Error syncing database " + err);
-          });
+      if (backup.target.type === "Repository" && args.repositories) {
+        await repositorySync.sync(selectedEnvironment, backup).then(() => {
+          return true;
+        });
       }
+
+      // if (backup.target.type === "Database" && args.databases) {
+      //   await databaseSync
+      //     .sync(selectedEnvironment, backup)
+      //     .then(() => {
+      //       return true;
+      //     })
+      //     .catch(err => {
+      //       console.log("Error syncing database " + err);
+      //     });
+      // }
     }
   }
 

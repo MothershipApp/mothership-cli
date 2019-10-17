@@ -3,13 +3,16 @@ const menus = {
     outside [command] <options>
 
     sync  .............. sync this machine with a mothership.app backup
+    reset  ............. reset your configuration file and reconfigure
     version ............ show package version
     help ............... show help menu for a command`,
 
   sync: `
-    sync <options>
+    sync <environment-to-sync> <options>
 
-    --project, -p ..... the project to sync`
+    --databases, -d ..... include databases
+    --repositories, -r ..... include repository
+    --directories, -f ..... include directories and files`
 };
 
 module.exports = args => {

@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const { exec } = require("child_process");
 const config = require("../../helpers/config");
 const chalk = require("chalk");
+const ora = require("ora");
 
 module.exports = {
   configure: function(environment, backup) {
@@ -41,6 +42,51 @@ module.exports = {
               resolve();
             });
         });
+    });
+  },
+
+  sync: function(environment, backup) {
+    return new Promise((resolve, reject) => {
+      const spinner = ora().start();
+      config
+        .getEnvironmentProperties(
+          environment.name,
+          `Repository: ${backup.target.id}`
+        )
+        .then(configuration => {
+          console.log("\n\nSyncing repository to specific commit...");
+          this.gitToCommit(configuration, backup.value)
+            .then(() => {
+              spinner.stop();
+              console.log(
+                chalk.green(`Local value synced to commit #${backup.value}`)
+              );
+              resolve();
+            })
+            .catch(err => {
+              spinner.stop();
+              reject(err);
+            });
+        })
+        .catch(err => {
+          spinner.stop();
+          reject(err);
+        });
+    });
+  },
+
+  gitToCommit: function(directory, commit) {
+    return new Promise((resolve, reject) => {
+      exec(
+        `git --git-dir ${directory}.git checkout ${commit}`,
+        (err, stdout, stderr) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve();
+        }
+      );
     });
   }
 };

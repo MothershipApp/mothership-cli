@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const aws = require("../../helpers/aws");
 const config = require("../../helpers/config");
+const databases = require("../../helpers/databases");
 const chalk = require("chalk");
 const ora = require("ora");
 
@@ -75,14 +76,33 @@ module.exports = {
           `Database: ${backup.target.id}`
         )
         .then(configuration => {
+          console.log("\n\nSyncing database to selected backup...");
           aws
             .cpS3(backup.target.bucket, backup.value, "./mothership-downloads")
             .then(() => {
-              spinner.stop();
-              console.log(
-                `Database s3://${backup.target.bucket}${backup.value} sync complete`
-              );
-              resolve();
+              const pathParts = backup.value.split("/");
+              const fileName = pathParts[pathParts.length - 1];
+              const filePath = `./mothership-downloads/${fileName}`;
+
+              databases
+                .importDB(filePath, configuration)
+                .then(() => {
+                  spinner.stop();
+                  console.log(
+                    chalk.green(
+                      `Database s3://${backup.target.bucket}${backup.value} sync complete`
+                    )
+                  );
+                  resolve();
+                })
+                .catch(err => {
+                  console.log(
+                    "There was an error importing the database: " + err
+                  );
+                });
+            })
+            .catch(err => {
+              console.log("There was an error importing the database: " + err);
             });
         })
         .catch(err => {
