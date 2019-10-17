@@ -12,7 +12,10 @@ module.exports = {
       // If the path already is present in the config file then super,
       // if not, then ask for it and store it in the config
       config
-        .getEnvironmentProperties(environment.name, backup.value)
+        .getEnvironmentProperties(
+          environment.name,
+          `Directory: ${backup.target.name}`
+        )
         .then(() => {
           resolve();
         })
@@ -34,7 +37,7 @@ module.exports = {
             .then(answers => {
               config.setEnvironmentProperty(
                 environment.name,
-                backup.target.name,
+                `Directory: ${backup.target.name}`,
                 `${path}/${answers.path}`
               );
               resolve();

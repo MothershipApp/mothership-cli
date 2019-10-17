@@ -1,10 +1,20 @@
 const inquirer = require("inquirer");
 const ora = require("ora");
 const axios = require("axios");
+const config = require("../helpers/config");
 
 module.exports = (args, access_token) => {
   let projects = [];
   let projectsData = [];
+
+  config
+    .getProperties("project")
+    .then(project => {
+      require("./choose-environment")(args, access_token, project);
+    })
+    .catch(err => {
+      retrieveProjects();
+    });
 
   function retrieveProjects() {
     const spinner = ora().start();
@@ -42,9 +52,8 @@ module.exports = (args, access_token) => {
         }
       ])
       .then(answers => {
+        config.setProperty("project", answers.project);
         require("./choose-environment")(args, access_token, answers.project);
       });
   }
-
-  retrieveProjects();
 };

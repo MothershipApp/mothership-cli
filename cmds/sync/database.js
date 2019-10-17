@@ -9,7 +9,10 @@ module.exports = {
       // If the path already is present in the config file then super,
       // if not, then ask for it and store it in the config
       config
-        .getEnvironmentProperties(environment.name, backup.target.name)
+        .getEnvironmentProperties(
+          environment.name,
+          `Database: ${backup.target.name}`
+        )
         .then(() => {
           resolve();
         })
@@ -49,7 +52,7 @@ module.exports = {
             ])
             .then(answers => {
               const finalObj = {};
-              finalObj[backup.target.name] = {
+              finalObj[`Database: ${backup.target.name}`] = {
                 db_type: answers.type,
                 db_name: answers.database,
                 db_user: answers.username,
