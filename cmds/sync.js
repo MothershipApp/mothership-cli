@@ -143,16 +143,16 @@ module.exports = (
         });
       }
 
-      // if (backup.target.type === "Database" && args.databases) {
-      //   await databaseSync
-      //     .sync(selectedEnvironment, backup)
-      //     .then(() => {
-      //       return true;
-      //     })
-      //     .catch(err => {
-      //       console.log("Error syncing database " + err);
-      //     });
-      // }
+      if (backup.target.type === "Database" && args.databases) {
+        await databaseSync
+          .sync(selectedEnvironment, backup)
+          .then(() => {
+            return true;
+          })
+          .catch(err => {
+            console.log("Error syncing database " + err);
+          });
+      }
     }
   }
 
