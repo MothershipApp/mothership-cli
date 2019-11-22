@@ -41,3 +41,9 @@ mothership sync
 ```
 mothership reset
 ```
+
+## Development
+
+1. Clone repo
+1. Install dependencies
+1. Link with `npm link`
