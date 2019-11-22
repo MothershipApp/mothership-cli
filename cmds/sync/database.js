@@ -102,7 +102,9 @@ module.exports = {
                 });
             })
             .catch(err => {
+              spinner.stop();
               console.log("There was an error importing the database: " + err);
+              process.exit(1);
             });
         })
         .catch(err => {

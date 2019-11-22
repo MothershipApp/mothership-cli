@@ -13,7 +13,7 @@ module.exports = (args, access_token, selectedProject, selectedEnvironment) => {
 
     axios
       .get(
-        `http://mothershipapi.test/api/v1/projects/${selectedProject.id}/environments/${selectedEnvironment.id}/backups?success-only=1`
+        `https://mothership.app/api/v1/projects/${selectedProject.id}/environments/${selectedEnvironment.id}/backups?success-only=1`
       )
       .then(response => {
         spinner.stop();

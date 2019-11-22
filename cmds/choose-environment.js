@@ -11,7 +11,7 @@ module.exports = (args, access_token, selectedProject) => {
     axios.defaults.headers.common.Authorization = `Bearer ${access_token}`;
 
     axios
-      .get(`http://mothershipapi.test/api/v1/projects/${selectedProject.id}`)
+      .get(`https://mothership.app/api/v1/projects/${selectedProject.id}`)
       .then(response => {
         spinner.stop();
         environmentsData = response.data.data.environments;

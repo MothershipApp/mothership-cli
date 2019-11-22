@@ -31,7 +31,7 @@ module.exports = {
                 message: `\n\n${chalk.green(
                   "SYNCING DIRECTORY FROM BACKUP:"
                 )}\n\nWhat directory relative to this one should ${
-                  backup.value
+                  backup.target.name
                 } sync to? `
               }
             ])

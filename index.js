@@ -52,6 +52,7 @@ module.exports = () => {
       }
     })
     .catch(err => {
+      console.log(err);
       console.error(
         `Please install aws CLI for your platform: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html`
       );

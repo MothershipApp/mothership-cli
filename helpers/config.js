@@ -188,12 +188,16 @@ module.exports = {
 
   setProfileProperty(profile, value) {
     return new Promise((resolve, reject) => {
-      this.readConfig().then(config => {
-        config.profiles[profile] = value;
-        this.writeConfig(config)
-          .then(resolve)
-          .catch(reject);
-      });
+      this.readConfig()
+        .then(config => {
+          config.profiles[profile] = value;
+          this.writeConfig(config)
+            .then(resolve())
+            .catch(reject());
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   }
 };

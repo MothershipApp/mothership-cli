@@ -21,7 +21,7 @@ module.exports = args => {
   function attemptLogin(payload) {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://mothershipapi.test/oauth/token", {
+        .post("https://mothership.app/oauth/token", {
           grant_type: "mothership.webapp",
           username: payload.email,
           password: payload.password
@@ -56,8 +56,9 @@ module.exports = args => {
           })
           .catch(error => {
             spinner.stop();
-            console.log("The login information was incorrect");
-            login();
+            // console.log(error);
+            console.log(error.response.data.message);
+            showLoginForm();
           });
       });
   }

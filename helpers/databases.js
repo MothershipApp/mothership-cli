@@ -2,11 +2,23 @@ const { exec } = require("child_process");
 
 module.exports = {
   async importDB(file, database) {
-    if (database.db_type === "mysql") {
-      this.importMySQL(file, database).then(() => {
-        resolve();
-      });
-    }
+    return new Promise((resolve, reject) => {
+      if (database.db_type === "mysql") {
+        this.importMySQL(file, database)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      } else {
+        reject(
+          new Error(
+            "Your database is not supported yet. Please let us know how we can improve: https://mothership.app/support"
+          )
+        );
+      }
+    });
   },
 
   async importMySQL(file, database) {

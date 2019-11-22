@@ -9,6 +9,8 @@ const defaultConfigContent = {
 };
 
 module.exports = args => {
+  config.checkDownloadsDirectory();
+
   if (args._[0] === "reset") {
     requestInitMothershipProject();
   } else {

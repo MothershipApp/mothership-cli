@@ -42,31 +42,45 @@ module.exports = {
 
   syncS3(bucket, bucketDirectory, to) {
     return new Promise((resolve, reject) => {
-      exec(
-        `aws s3 sync s3://${bucket}${bucketDirectory} ${to}`,
-        (err, stdout, stderr) => {
-          if (err) {
-            return reject(err);
-          }
+      config
+        .getProfileProperties(bucket)
+        .then(profile => {
+          exec(
+            `aws s3 sync s3://${bucket}${bucketDirectory} ${to} --profile ${profile}`,
+            (err, stdout, stderr) => {
+              if (err) {
+                return reject(err);
+              }
 
-          return resolve();
-        }
-      );
+              return resolve();
+            }
+          );
+        })
+        .catch(error => {
+          return reject(error);
+        });
     });
   },
 
   cpS3(bucket, filePath, to) {
     return new Promise((resolve, reject) => {
-      exec(
-        `aws s3 cp s3://${bucket}${filePath} ${to}`,
-        (err, stdout, stderr) => {
-          if (err) {
-            return reject(err);
-          }
+      config
+        .getProfileProperties(bucket)
+        .then(profile => {
+          exec(
+            `aws s3 cp s3://${bucket}${filePath} ${to} --profile ${profile}`,
+            (err, stdout, stderr) => {
+              if (err) {
+                return reject(err);
+              }
 
-          return resolve();
-        }
-      );
+              return resolve();
+            }
+          );
+        })
+        .catch(error => {
+          return reject(error);
+        });
     });
   }
 };
