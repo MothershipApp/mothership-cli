@@ -28,7 +28,7 @@ module.exports = {
               {
                 type: "file-tree-selection",
                 name: "path",
-                message: `\n\n${chalk.green(
+                message: `\n\n\n\n${chalk.green(
                   "SYNCING DIRECTORY FROM BACKUP:"
                 )}\n\nWhat directory relative to this one should ${
                   backup.target.name

@@ -8,7 +8,7 @@ Oh... done already? Let's get started!
 
 ## Installing
 
-This will go quick. There are a couple items that you're going to need to run Mothership CLI. Follow the instructions below to install AWS CLI and NodeJS before you install Mothership CLI.
+This will go quick. There are a few items that you're going to need to run Mothership CLI. Follow the instructions below to install AWS CLI and NodeJS before you install Mothership CLI.
 
 ### Requirements
 
@@ -27,6 +27,10 @@ To install mothership you'll want to install it globally so that it can be run f
 ```sh
 npm install -g mothership-cli
 ```
+
+### MySQL
+
+If syncing databases you need to ensure that you have the ```mysql`` command available in your terminal
 
 ## Usage
 

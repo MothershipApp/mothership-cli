@@ -25,11 +25,9 @@ module.exports = {
               {
                 type: "input",
                 name: "path",
-                message: `${chalk.green(
+                message: `\n\n\n\n${chalk.green(
                   "SYNCING REPOSITORY BY JUMPING TO COMMIT"
-                )}\n\nWhat directory relative to this one (${path}) should ${
-                  backup.target.path
-                } sync to? `,
+                )}\n\nWhat directory should be used to sync ${backup.target.name}(${backup.target.path}) the repository commit? Use <space> to enter in a directory and <enter> to select it`,
                 default: "./"
               }
             ])
