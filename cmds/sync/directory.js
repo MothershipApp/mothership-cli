@@ -30,9 +30,7 @@ module.exports = {
                 name: "path",
                 message: `\n\n\n\n${chalk.green(
                   "SYNCING DIRECTORY FROM BACKUP:"
-                )}\n\nWhat directory relative to this one should ${
-                  backup.target.name
-                } sync to? `
+                )}\n\nWhat directory should ${backup.target.name} sync to? `
               }
             ])
             .then(answers => {

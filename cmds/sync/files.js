@@ -1,8 +1,11 @@
 const inquirer = require("inquirer");
-const { exec } = require("child_process");
+const inquirerFileTreeSelection = require("inquirer-file-tree-selection-prompt");
 const config = require("../../helpers/config");
+const aws = require("../../helpers/aws");
 const chalk = require("chalk");
 const ora = require("ora");
+
+inquirer.registerPrompt("file-tree-selection", inquirerFileTreeSelection);
 
 module.exports = {
   configure: function(environment, backup) {
@@ -10,10 +13,7 @@ module.exports = {
       // If the path already is present in the config file then super,
       // if not, then ask for it and store it in the config
       config
-        .getEnvironmentProperties(
-          environment.name,
-          `Repository: ${backup.target.id}`
-        )
+        .getEnvironmentProperties(environment.name, `File: ${backup.target.id}`)
         .then(() => {
           resolve();
         })
@@ -23,20 +23,19 @@ module.exports = {
           inquirer
             .prompt([
               {
-                type: "input",
+                type: "file-tree-selection",
                 name: "path",
                 message: `\n\n\n\n${chalk.green(
-                  "SELECT THE DIRECTORY TO SYNC"
-                )}\n\nWhat directory is the ${backup.target.name}(${
-                  backup.target.path
-                }) repository?`,
-                default: "./"
+                  "SYNCING FILE FROM BACKUP:"
+                )}\n\nWhat file should this file (${
+                  backup.target.name
+                }) replace? `
               }
             ])
             .then(answers => {
               config.setEnvironmentProperty(
                 environment.name,
-                `Repository: ${backup.target.id}`,
+                `File: ${backup.target.id}`,
                 `${path}/${answers.path}`
               );
               resolve();
@@ -49,44 +48,23 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const spinner = ora().start();
       config
-        .getEnvironmentProperties(
-          environment.name,
-          `Repository: ${backup.target.id}`
-        )
+        .getEnvironmentProperties(environment.name, `File: ${backup.target.id}`)
         .then(configuration => {
-          console.log("\n\nSyncing repository to specific commit...");
-          this.gitToCommit(configuration, backup.value)
+          console.log(backup.target.bucket, backup.value, configuration);
+          aws
+            .syncS3(backup.target.bucket, backup.value, configuration)
             .then(() => {
               spinner.stop();
               console.log(
-                chalk.green(`Local value synced to commit #${backup.value}`)
+                `File s3://${backup.target.bucket}${backup.value} sync complete`
               );
               resolve();
-            })
-            .catch(err => {
-              spinner.stop();
-              reject(err);
             });
         })
         .catch(err => {
           spinner.stop();
           reject(err);
         });
-    });
-  },
-
-  gitToCommit: function(directory, commit) {
-    return new Promise((resolve, reject) => {
-      exec(
-        `git --git-dir ${directory}.git checkout ${commit}`,
-        (err, stdout, stderr) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve();
-        }
-      );
     });
   }
 };
