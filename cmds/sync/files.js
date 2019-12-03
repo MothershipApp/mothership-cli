@@ -25,11 +25,13 @@ module.exports = {
               {
                 type: "file-tree-selection",
                 name: "path",
+                onlyShowDir: true,
+                default: "Do not sync",
                 message: `\n\n\n\n${chalk.green(
                   "SYNCING FILE FROM BACKUP:"
-                )}\n\nWhat file should this file (${
+                )}\n\nWhat directory should this file (${
                   backup.target.name
-                }) replace? `
+                }) be placed? `
               }
             ])
             .then(answers => {
@@ -56,7 +58,11 @@ module.exports = {
             .then(() => {
               spinner.stop();
               console.log(
-                `File s3://${backup.target.bucket}${backup.value} sync complete`
+                chalk.green(
+                  `File s3://${backup.target.bucket}${backup.value} sync complete
+                
+                  `
+                )
               );
               resolve();
             });

@@ -27,7 +27,9 @@ module.exports = {
             .prompt([
               {
                 type: "file-tree-selection",
+                onlyShowDir: true,
                 name: "path",
+                default: "Do not sync",
                 message: `\n\n\n\n${chalk.green(
                   "SYNCING DIRECTORY FROM BACKUP:"
                 )}\n\nWhat directory should ${backup.target.name} sync to? `
@@ -60,7 +62,11 @@ module.exports = {
             .then(() => {
               spinner.stop();
               console.log(
-                `Directory s3://${backup.target.bucket}${backup.value} sync complete`
+                chalk.green(
+                  `Directory s3://${backup.target.bucket}${backup.value} sync complete
+                  
+                  `
+                )
               );
               resolve();
             });

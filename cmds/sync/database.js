@@ -90,7 +90,9 @@ module.exports = {
                   spinner.stop();
                   console.log(
                     chalk.green(
-                      `Database s3://${backup.target.bucket}${backup.value} sync complete`
+                      `Database s3://${backup.target.bucket}${backup.value} sync complete
+                      
+                      `
                     )
                   );
                   resolve();

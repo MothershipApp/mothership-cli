@@ -59,7 +59,9 @@ module.exports = {
             .then(() => {
               spinner.stop();
               console.log(
-                chalk.green(`Local value synced to commit #${backup.value}`)
+                chalk.green(`Local value synced to commit #${backup.value}
+                
+                `)
               );
               resolve();
             })

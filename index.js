@@ -3,17 +3,30 @@ const aws = require("./helpers/aws");
 
 module.exports = () => {
   const args = minimist(process.argv.slice(2), {
-    boolean: ["directories", "databases", "repositories"],
-    alias: { f: "directories", d: "databases", r: "repositories" }
+    string: ["backup-date"],
+    boolean: ["directories", "databases", "repositories", "files"],
+    alias: {
+      f: "directories",
+      d: "databases",
+      r: "repositories",
+      i: "files"
+    }
   });
 
-  if (!args.databases && !args.directories && !args.repositories) {
+  if (
+    !args.databases &&
+    !args.directories &&
+    !args.repositories &&
+    !args.files
+  ) {
     args.databases = true;
     args.d = true;
     args.directories = true;
     args.f = true;
     args.repositories = true;
     args.r = true;
+    args.files = true;
+    args.i = true;
   }
 
   let cmd = args._[0] || "help";

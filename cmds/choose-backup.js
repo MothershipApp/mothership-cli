@@ -29,12 +29,37 @@ module.exports = (args, access_token, selectedProject, selectedEnvironment) => {
           });
         }
 
-        chooseBackup();
+        // Check arguments and see if the environment name provided matches
+        // Any in the list. If so, use that one. If not, error and ask to choose
+        backupFromArgument = getBackupArgument();
+        if (backupFromArgument) {
+          require("./sync")(
+            args,
+            access_token,
+            selectedProject,
+            selectedEnvironment,
+            backupFromArgument
+          );
+        } else {
+          chooseBackup();
+        }
       })
       .catch(error => {
         console.log("There was an error loading backups", error);
         process.exit();
       });
+  }
+
+  function getBackupArgument() {
+    if (args["backup-date"]) {
+      for (let i = 0; i < backups.length; i++) {
+        if (args["backup-date"] === backups[i].name) {
+          return backups[i].value;
+        }
+      }
+      console.error("Backup argument provided not found");
+    }
+    return false;
   }
 
   function chooseBackup() {
