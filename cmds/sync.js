@@ -177,7 +177,7 @@ module.exports = (
     if (label !== "database" && label !== "commit") {
       description += ` (${item.target.path})`;
     } else if (label === "commit") {
-      description += ` (${item.value})`;
+      description += ` (#${item.value.substring(0, 6)})`;
     }
     await inquirer
       .prompt([
@@ -210,9 +210,7 @@ module.exports = (
           if (answers.confirmation) {
             sync().then(() => {
               console.log(
-                `\n\n${chalk.green(
-                  "Mothership Sync Complete. Transmission End."
-                )}\n\n`
+                `${chalk.black.bgGreen(" Mothership Sync Complete ")}\n\n`
               );
               process.exit();
             });
