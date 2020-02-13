@@ -31,5 +31,8 @@
   "devDependencies": {
     "sleep": "^6.1.0"
   },
-  "author": "Gary Williams - LBM.co"
+  "author": "Gary Williams - LBM.co",
+  "scripts": {
+    "postversion": "git push && git push --tags && npm publish"
+  }
 }

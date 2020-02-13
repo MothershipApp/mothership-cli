@@ -28,24 +28,28 @@ module.exports = (args, access_token) => {
       .get(`https://mothership.app/api/v1/projects`)
       .then(response => {
         spinner.stop();
-        projectsData = response.data.data;
-        for (let i = 0; i < projectsData.length; i++) {
-          const project = projectsData[i];
+        teamData = response.data.data;
+        for (let i = 0; i < teamData.length; i++) {
+          const team = teamData[i];
 
-          projects.push({
-            name: project.name,
-            value: project
-          });
+          for (let j = 0; j < team.projects.length; j++) {
+            const teamProject = team.projects[j];
+            projects.push({
+              name: teamProject.name,
+              value: teamProject
+            });
+          }
         }
 
         chooseProject();
       })
       .catch(error => {
-        console.log("There was an error loading projects");
+        console.log(error, "There was an error loading projects");
       });
   }
 
   function chooseProject() {
+    console.log(projects);
     inquirer
       .prompt([
         {

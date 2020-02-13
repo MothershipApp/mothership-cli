@@ -22,7 +22,7 @@ module.exports = args => {
     return new Promise((resolve, reject) => {
       axios
         .post("https://mothership.app/oauth/token", {
-          grant_type: "mothership.webapp",
+          grant_type: "mothership.cliapp",
           username: payload.email,
           password: payload.password
         })
